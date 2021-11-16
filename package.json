@@ -1,0 +1,30 @@
+{
+  "name": "drutest",
+  "version": "1.0.0",
+  "description": "session test ",
+  "main": "app.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "sequelize": "^6.9.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tkmanga/DruTest.git"
+  },
+  "keywords": [
+    "nodejs",
+    "session",
+    "express",
+    "sequelize"
+  ],
+  "author": "Tkmanga",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Tkmanga/DruTest/issues"
+  },
+  "homepage": "https://github.com/Tkmanga/DruTest#readme"
+}
