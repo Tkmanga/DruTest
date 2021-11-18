@@ -56,4 +56,3 @@ app.listen(PORT, () => {
 
 //cookie-parser para manejar cookies 
 //cookie-signature para darle seguridad al valor de la cookie
-//
