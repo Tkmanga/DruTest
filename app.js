@@ -4,6 +4,8 @@ const sequelize = require('./database/db')
 const cookieParser = require('cookie-parser') 
 const cookie = require('cookie-signature')
 const uid = require('uid-safe') 
+const Session =require('./database/models/Sessions')
+
 //Setting 
 const PORT = process.env.PORT || 3000; 
 app.use(express.json())
@@ -36,7 +38,18 @@ app.get('/',  async (req, res) => {
     //var val = cookie.sign('hola',process.env.COOKIE_SECRET );
     //console.log(cookie.unsign(val, process.env.COOKIE_SECRET))
     //console.log(cookie.unsign(val, 'luna')) 
+
+    console.log(req.headers.cookie['sessionId'])
+    /* 
+    Session.create(
+        {
+            data: 'AAAAAAAAAAAA'
+        }
+    ).then((session) => {
+        res.json(session)
+    })
     
+    */
     res.status(200).json({msg: `here is your cookie ${req.headers.cookie}`})
 })
 app.get('/protected',validateCookie, (req, res) => {
@@ -46,7 +59,7 @@ app.get('/protected',validateCookie, (req, res) => {
 app.listen(PORT, () => {
     console.log(`DruTest app listening on port ${PORT}`); 
     // Database conection 
-    sequelize.authenticate().then(() => {
+    sequelize.sync({force:false}).then(() => {
         console.log(`We're conect to database`)
     })
     .catch(err =>{
