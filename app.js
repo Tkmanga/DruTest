@@ -8,7 +8,7 @@ const uid = require('uid-safe')
 const PORT = process.env.PORT || 3000; 
 app.use(express.json())
 app.use(express.urlencoded({extends:false})) 
-app.use(cookieParser())
+app.use(cookieParser(process.env.COOKIE_SECRET))
 
 //Middleware 
 function validateCookie(req, res, next) {
@@ -25,15 +25,17 @@ function validateCookie(req, res, next) {
         res.status(403).send({msg: 'Forbidden. Incorrect authorization'})
     }
 }
+
+
 //Routes
-app.get('/',  (req, res) => {
+app.get('/',  async (req, res) => {
     
-    res.cookie('session_id',uid.sync(18), {maxAge : 30000 })
-    var valor = req.headers.cookie['session_id']
-    console.log(v)
-    var val = cookie.sign('hola',process.env.COOKIE_SECRET );
-    console.log(cookie.unsign(val, process.env.COOKIE_SECRET))
-    console.log(cookie.unsign(val, 'luna')) 
+    res.cookie('sessionId',uid.sync(18), {maxAge : 3600, signed: true}) 
+    //var {cookie} = req
+    //console.log(cookie)
+    //var val = cookie.sign('hola',process.env.COOKIE_SECRET );
+    //console.log(cookie.unsign(val, process.env.COOKIE_SECRET))
+    //console.log(cookie.unsign(val, 'luna')) 
     
     res.status(200).json({msg: `here is your cookie ${req.headers.cookie}`})
 })

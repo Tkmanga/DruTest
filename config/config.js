@@ -1,3 +1,4 @@
+'use strict';
 require('dotenv').config()
 
 module.exports = {
@@ -7,6 +8,10 @@ module.exports = {
         "database":  process.env.DB_NAME,
         "host": process.env.DB_HOST,
         "port": process.env.DB_PORT,
-        "dialect": "mysql"
-    }
+        "dialect": process.env.DB_DIALECT
+    },
+    
+    //Configurar migraciones 
+    migrationStorage: "sequelize", 
+    migrationStorageTable: "migrations",
 }
