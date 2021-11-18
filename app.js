@@ -38,19 +38,17 @@ app.get('/',  async (req, res) => {
     //var val = cookie.sign('hola',process.env.COOKIE_SECRET );
     //console.log(cookie.unsign(val, process.env.COOKIE_SECRET))
     //console.log(cookie.unsign(val, 'luna')) 
-
-    console.log(req.headers.cookie['sessionId'])
-    /* 
     Session.create(
         {
-            data: 'AAAAAAAAAAAA'
+            data: `${req.headers.cookie}`
         }
     ).then((session) => {
         res.json(session)
     })
     
-    */
-    res.status(200).json({msg: `here is your cookie ${req.headers.cookie}`})
+    
+    //res.status(200).json({msg: `here is your cookie ${req.headers.cookie}`})
+    res.send(`Views: [x]`)
 })
 app.get('/protected',validateCookie, (req, res) => {
     res.send(`I have been sent these cookies ${req.headers.cookie}`)
