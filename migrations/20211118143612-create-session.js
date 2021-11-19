@@ -8,8 +8,11 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      data: {
+      sessionId: {
         type: Sequelize.STRING
+      },
+      data: {
+        type: Sequelize.TEXT
       },
       createdAt: {
         allowNull: false,
