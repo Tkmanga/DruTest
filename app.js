@@ -17,48 +17,57 @@ async function validateCookie(req, res, next) {
     const {cookies} = req
 
     if('sessionId' in cookies) {
-        if(cookies.sessionId === '123456'){
-
-            const SessionDB = await Session.findOne({ where: { data: 'sessionId=123456' } }); //Aca tengo que consultar por la sessionID fija! 
-            req.session.session = SessionDB 
-            console.log(SessionDBJson)
+        const SessionDB = await Session.findOne({attributes: ['data'], where: { sessionId: "Probando" } }); // where sessionId: req.session (not work req.session)
+            //Aca tengo que consultar por la sessionID fija! 
             if (SessionDB === null) {
-            console.log('Not found!');
+                console.log('Not found!');
             } else {
-            console.log(SessionDB instanceof Session); // true
+                console.log(SessionDB); // Object Session 
+                next();
             }
-            next();
-        }else{
-            res.status(403).send({msg: 'Forbidden. Incorrect authorization'})
-        }
     }else{
-        res.status(403).send({msg: 'Forbidden. Incorrect authorization'})
+        //Aqui deberia darle la cookie al user ? seteando tmb el req.session ?
+        res.status(403).send({msg: 'Forbidden. Incorrect authorization, try again'})
     }
 }
-reqSaveSesion = (sessionId, data) => {
-    let dataJson = JSON.stringify(data)
-    Session.create(
+reqSaveSesion = async(sessionId, data) => {
+
+    const SessionDB = await Session.findOne({attributes: ['data'], where: { sessionId: "Probando" } }); // there are any sessinID in db ? 
+
+    if (SessionDB === null) {
+        let dataJson = JSON.stringify(data)
+        Session.create(
         {
             sessionId: `${sessionId}`,
             data: `${dataJson}`
         }
     )
+    } else {
+        //Update ! session 
+        SessionDB.dataValues.data = 'ABCD'
+        await SessionDB.save();
+        next();
+    }
+    
 }
 
 //Routes
 app.get('/',  async (req, res) => {
     
-    res.cookie('sessionId','123456', {maxAge : 60000})
+    res.cookie('sessionId','123456', {maxAge : 60000});
     const {cookies} = req
     if(cookies.sessionId!== undefined){
-        req.session = uid.sync(18)
+        req.session = uid.sync(18) //seteando req.session 
         reqSaveSesion(req.session,cookies.sessionId)
     }
     res.send(`Views: [x]`)
 })
+/*
 app.get('/protected',validateCookie, (req, res) => {
     res.send(`I have been sent these cookies ${req.headers.cookie}`)
 })
+
+*/
 //Start 
 app.listen(PORT, () => {
     console.log(`DruTest app listening on port ${PORT}`); 
