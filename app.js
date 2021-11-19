@@ -15,10 +15,11 @@ app.use(cookieParser(process.env.COOKIE_SECRET))
 //Middleware 
 async function validateCookie(req, res, next) {
     const {cookies} = req
+
     if('sessionId' in cookies) {
         if(cookies.sessionId === '123456'){
 
-            const SessionDB = await Session.findOne({ where: { data: 'sessionId=123456' } });
+            const SessionDB = await Session.findOne({ where: { data: 'sessionId=123456' } }); //Aca tengo que consultar por la sessionID fija! 
             req.session.session = SessionDB 
             console.log(SessionDBJson)
             if (SessionDB === null) {
@@ -34,10 +35,11 @@ async function validateCookie(req, res, next) {
         res.status(403).send({msg: 'Forbidden. Incorrect authorization'})
     }
 }
-reqSaveSesion = (data) => {
+reqSaveSesion = (sessionId, data) => {
     let dataJson = JSON.stringify(data)
     Session.create(
         {
+            sessionId: `${sessionId}`,
             data: `${dataJson}`
         }
     )
@@ -49,7 +51,8 @@ app.get('/',  async (req, res) => {
     res.cookie('sessionId','123456', {maxAge : 60000})
     const {cookies} = req
     if(cookies.sessionId!== undefined){
-        reqSaveSesion(cookies.sessionId)
+        req.session = uid.sync(18)
+        reqSaveSesion(req.session,cookies.sessionId)
     }
     res.send(`Views: [x]`)
 })
