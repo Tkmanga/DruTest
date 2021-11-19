@@ -35,9 +35,10 @@ async function validateCookie(req, res, next) {
     }
 }
 reqSaveSesion = (data) => {
+    let dataJson = JSON.stringify(data)
     Session.create(
         {
-            data: `${data}`
+            data: `${dataJson}`
         }
     )
 }
@@ -46,13 +47,10 @@ reqSaveSesion = (data) => {
 app.get('/',  async (req, res) => {
     
     res.cookie('sessionId','123456', {maxAge : 60000})
-    //var {cookie} = req
-    //console.log(cookie)
-    //var val = cookie.sign('hola',process.env.COOKIE_SECRET );
-    //console.log(cookie.unsign(val, process.env.COOKIE_SECRET))
-    //console.log(cookie.unsign(val, 'luna')) 
-    reqSaveSesion(req.headers.cookie)
-    //res.status(200).json({msg: `here is your cookie ${req.headers.cookie}`})
+    const {cookies} = req
+    if(cookies.sessionId!== undefined){
+        reqSaveSesion(cookies.sessionId)
+    }
     res.send(`Views: [x]`)
 })
 app.get('/protected',validateCookie, (req, res) => {
