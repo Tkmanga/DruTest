@@ -5,7 +5,7 @@ class Session extends Model {
 }
 
 Session.init({
-    data: DataTypes.JSON
+    data: DataTypes.TEXT
 },{
     sequelize,
     modelName: 'Session'

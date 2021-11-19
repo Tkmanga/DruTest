@@ -13,12 +13,19 @@ app.use(express.urlencoded({extends:false}))
 app.use(cookieParser(process.env.COOKIE_SECRET))
 
 //Middleware 
-function validateCookie(req, res, next) {
+async function validateCookie(req, res, next) {
     const {cookies} = req
-    console.log(cookies)
-    if('session_id' in cookies) {
-        console.log('Session ID Exists.')
-        if(cookies.session_id === '123456'){
+    if('sessionId' in cookies) {
+        if(cookies.sessionId === '123456'){
+
+            const SessionDB = await Session.findOne({ where: { data: 'sessionId=123456' } });
+            req.session.session = SessionDB 
+            console.log(SessionDBJson)
+            if (SessionDB === null) {
+            console.log('Not found!');
+            } else {
+            console.log(SessionDB instanceof Session); // true
+            }
             next();
         }else{
             res.status(403).send({msg: 'Forbidden. Incorrect authorization'})
@@ -27,26 +34,24 @@ function validateCookie(req, res, next) {
         res.status(403).send({msg: 'Forbidden. Incorrect authorization'})
     }
 }
-
+reqSaveSesion = (data) => {
+    Session.create(
+        {
+            data: `${data}`
+        }
+    )
+}
 
 //Routes
 app.get('/',  async (req, res) => {
     
-    res.cookie('sessionId',uid.sync(18), {maxAge : 3600, signed: true}) 
+    res.cookie('sessionId','123456', {maxAge : 60000})
     //var {cookie} = req
     //console.log(cookie)
     //var val = cookie.sign('hola',process.env.COOKIE_SECRET );
     //console.log(cookie.unsign(val, process.env.COOKIE_SECRET))
     //console.log(cookie.unsign(val, 'luna')) 
-    Session.create(
-        {
-            data: `${req.headers.cookie}`
-        }
-    ).then((session) => {
-        res.json(session)
-    })
-    
-    
+    reqSaveSesion(req.headers.cookie)
     //res.status(200).json({msg: `here is your cookie ${req.headers.cookie}`})
     res.send(`Views: [x]`)
 })
